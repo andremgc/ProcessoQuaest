@@ -1,0 +1,161 @@
+"";"voto1";"idade";"sexo";"Freq"
+"1";"Candidato 2";"de 16 a 24";"Feminino";9,5
+"2";"Candidato 1";"de 16 a 24";"Feminino";0
+"3";"Candidato 8";"de 16 a 24";"Feminino";7,1
+"4";"Candidato 5";"de 16 a 24";"Feminino";14,3
+"5";"Candidato 10";"de 16 a 24";"Feminino";21,4
+"6";"Candidato 9";"de 16 a 24";"Feminino";14,3
+"7";"Candidato 3";"de 16 a 24";"Feminino";11,1
+"8";"Candidato 4";"de 16 a 24";"Feminino";0
+"9";"Candidato 6";"de 16 a 24";"Feminino";14,3
+"10";"Candidato 7";"de 16 a 24";"Feminino";33,3
+"11";"Candidato 12";"de 16 a 24";"Feminino";0
+"12";"Candidato 14";"de 16 a 24";"Feminino";33,3
+"13";"Candidato 11";"de 16 a 24";"Feminino";0
+"14";"Candidato 13";"de 16 a 24";"Feminino";0
+"15";"Ninguém/Branco/Nulo";"de 16 a 24";"Feminino";18,1
+"16";"NS/NR";"de 16 a 24";"Feminino";18,1
+"17";"Candidato 2";"de 25 a 34";"Feminino";19,3
+"18";"Candidato 1";"de 25 a 34";"Feminino";27,3
+"19";"Candidato 8";"de 25 a 34";"Feminino";21,4
+"20";"Candidato 5";"de 25 a 34";"Feminino";21,4
+"21";"Candidato 10";"de 25 a 34";"Feminino";28,6
+"22";"Candidato 9";"de 25 a 34";"Feminino";42,9
+"23";"Candidato 3";"de 25 a 34";"Feminino";11,1
+"24";"Candidato 4";"de 25 a 34";"Feminino";0
+"25";"Candidato 6";"de 25 a 34";"Feminino";28,6
+"26";"Candidato 7";"de 25 a 34";"Feminino";33,3
+"27";"Candidato 12";"de 25 a 34";"Feminino";33,3
+"28";"Candidato 14";"de 25 a 34";"Feminino";33,3
+"29";"Candidato 11";"de 25 a 34";"Feminino";0
+"30";"Candidato 13";"de 25 a 34";"Feminino";0
+"31";"Ninguém/Branco/Nulo";"de 25 a 34";"Feminino";19,4
+"32";"NS/NR";"de 25 a 34";"Feminino";8,4
+"33";"Candidato 2";"de 35 a 44";"Feminino";20
+"34";"Candidato 1";"de 35 a 44";"Feminino";18,2
+"35";"Candidato 8";"de 35 a 44";"Feminino";7,1
+"36";"Candidato 5";"de 35 a 44";"Feminino";42,9
+"37";"Candidato 10";"de 35 a 44";"Feminino";21,4
+"38";"Candidato 9";"de 35 a 44";"Feminino";14,3
+"39";"Candidato 3";"de 35 a 44";"Feminino";22,2
+"40";"Candidato 4";"de 35 a 44";"Feminino";0
+"41";"Candidato 6";"de 35 a 44";"Feminino";28,6
+"42";"Candidato 7";"de 35 a 44";"Feminino";0
+"43";"Candidato 12";"de 35 a 44";"Feminino";0
+"44";"Candidato 14";"de 35 a 44";"Feminino";33,3
+"45";"Candidato 11";"de 35 a 44";"Feminino";0
+"46";"Candidato 13";"de 35 a 44";"Feminino";0
+"47";"Ninguém/Branco/Nulo";"de 35 a 44";"Feminino";23,6
+"48";"NS/NR";"de 35 a 44";"Feminino";22,9
+"49";"Candidato 2";"de 45 a 59";"Feminino";26,8
+"50";"Candidato 1";"de 45 a 59";"Feminino";18,2
+"51";"Candidato 8";"de 45 a 59";"Feminino";42,9
+"52";"Candidato 5";"de 45 a 59";"Feminino";21,4
+"53";"Candidato 10";"de 45 a 59";"Feminino";14,3
+"54";"Candidato 9";"de 45 a 59";"Feminino";14,3
+"55";"Candidato 3";"de 45 a 59";"Feminino";22,2
+"56";"Candidato 4";"de 45 a 59";"Feminino";50
+"57";"Candidato 6";"de 45 a 59";"Feminino";14,3
+"58";"Candidato 7";"de 45 a 59";"Feminino";0
+"59";"Candidato 12";"de 45 a 59";"Feminino";66,7
+"60";"Candidato 14";"de 45 a 59";"Feminino";0
+"61";"Candidato 11";"de 45 a 59";"Feminino";100
+"62";"Candidato 13";"de 45 a 59";"Feminino";50
+"63";"Ninguém/Branco/Nulo";"de 45 a 59";"Feminino";18,1
+"64";"NS/NR";"de 45 a 59";"Feminino";22,9
+"65";"Candidato 2";"mais de 60";"Feminino";24,4
+"66";"Candidato 1";"mais de 60";"Feminino";36,4
+"67";"Candidato 8";"mais de 60";"Feminino";21,4
+"68";"Candidato 5";"mais de 60";"Feminino";0
+"69";"Candidato 10";"mais de 60";"Feminino";14,3
+"70";"Candidato 9";"mais de 60";"Feminino";14,3
+"71";"Candidato 3";"mais de 60";"Feminino";33,3
+"72";"Candidato 4";"mais de 60";"Feminino";50
+"73";"Candidato 6";"mais de 60";"Feminino";14,3
+"74";"Candidato 7";"mais de 60";"Feminino";33,3
+"75";"Candidato 12";"mais de 60";"Feminino";0
+"76";"Candidato 14";"mais de 60";"Feminino";0
+"77";"Candidato 11";"mais de 60";"Feminino";0
+"78";"Candidato 13";"mais de 60";"Feminino";50
+"79";"Ninguém/Branco/Nulo";"mais de 60";"Feminino";20,8
+"80";"NS/NR";"mais de 60";"Feminino";27,7
+"81";"Candidato 2";"de 16 a 24";"Masculino";15,8
+"82";"Candidato 1";"de 16 a 24";"Masculino";3,2
+"83";"Candidato 8";"de 16 a 24";"Masculino";16,7
+"84";"Candidato 5";"de 16 a 24";"Masculino";9,1
+"85";"Candidato 10";"de 16 a 24";"Masculino";33,3
+"86";"Candidato 9";"de 16 a 24";"Masculino";25
+"87";"Candidato 3";"de 16 a 24";"Masculino";42,9
+"88";"Candidato 4";"de 16 a 24";"Masculino";0
+"89";"Candidato 6";"de 16 a 24";"Masculino";33,3
+"90";"Candidato 7";"de 16 a 24";"Masculino";0
+"91";"Candidato 12";"de 16 a 24";"Masculino";0
+"92";"Candidato 14";"de 16 a 24";"Masculino";NA
+"93";"Candidato 11";"de 16 a 24";"Masculino";0
+"94";"Candidato 13";"de 16 a 24";"Masculino";0
+"95";"Ninguém/Branco/Nulo";"de 16 a 24";"Masculino";8,6
+"96";"NS/NR";"de 16 a 24";"Masculino";15,8
+"97";"Candidato 2";"de 25 a 34";"Masculino";15,8
+"98";"Candidato 1";"de 25 a 34";"Masculino";12,9
+"99";"Candidato 8";"de 25 a 34";"Masculino";33,3
+"100";"Candidato 5";"de 25 a 34";"Masculino";54,5
+"101";"Candidato 10";"de 25 a 34";"Masculino";33,3
+"102";"Candidato 9";"de 25 a 34";"Masculino";16,7
+"103";"Candidato 3";"de 25 a 34";"Masculino";28,6
+"104";"Candidato 4";"de 25 a 34";"Masculino";0
+"105";"Candidato 6";"de 25 a 34";"Masculino";33,3
+"106";"Candidato 7";"de 25 a 34";"Masculino";0
+"107";"Candidato 12";"de 25 a 34";"Masculino";0
+"108";"Candidato 14";"de 25 a 34";"Masculino";NA
+"109";"Candidato 11";"de 25 a 34";"Masculino";50
+"110";"Candidato 13";"de 25 a 34";"Masculino";100
+"111";"Ninguém/Branco/Nulo";"de 25 a 34";"Masculino";18,6
+"112";"NS/NR";"de 25 a 34";"Masculino";21,1
+"113";"Candidato 2";"de 35 a 44";"Masculino";18,9
+"114";"Candidato 1";"de 35 a 44";"Masculino";25,8
+"115";"Candidato 8";"de 35 a 44";"Masculino";33,3
+"116";"Candidato 5";"de 35 a 44";"Masculino";27,3
+"117";"Candidato 10";"de 35 a 44";"Masculino";16,7
+"118";"Candidato 9";"de 35 a 44";"Masculino";25
+"119";"Candidato 3";"de 35 a 44";"Masculino";0
+"120";"Candidato 4";"de 35 a 44";"Masculino";12,5
+"121";"Candidato 6";"de 35 a 44";"Masculino";33,3
+"122";"Candidato 7";"de 35 a 44";"Masculino";25
+"123";"Candidato 12";"de 35 a 44";"Masculino";33,3
+"124";"Candidato 14";"de 35 a 44";"Masculino";NA
+"125";"Candidato 11";"de 35 a 44";"Masculino";0
+"126";"Candidato 13";"de 35 a 44";"Masculino";0
+"127";"Ninguém/Branco/Nulo";"de 35 a 44";"Masculino";15,7
+"128";"NS/NR";"de 35 a 44";"Masculino";19,3
+"129";"Candidato 2";"de 45 a 59";"Masculino";23,7
+"130";"Candidato 1";"de 45 a 59";"Masculino";32,3
+"131";"Candidato 8";"de 45 a 59";"Masculino";16,7
+"132";"Candidato 5";"de 45 a 59";"Masculino";9,1
+"133";"Candidato 10";"de 45 a 59";"Masculino";16,7
+"134";"Candidato 9";"de 45 a 59";"Masculino";33,3
+"135";"Candidato 3";"de 45 a 59";"Masculino";0
+"136";"Candidato 4";"de 45 a 59";"Masculino";62,5
+"137";"Candidato 6";"de 45 a 59";"Masculino";0
+"138";"Candidato 7";"de 45 a 59";"Masculino";25
+"139";"Candidato 12";"de 45 a 59";"Masculino";66,7
+"140";"Candidato 14";"de 45 a 59";"Masculino";NA
+"141";"Candidato 11";"de 45 a 59";"Masculino";50
+"142";"Candidato 13";"de 45 a 59";"Masculino";0
+"143";"Ninguém/Branco/Nulo";"de 45 a 59";"Masculino";32,9
+"144";"NS/NR";"de 45 a 59";"Masculino";26,3
+"145";"Candidato 2";"mais de 60";"Masculino";25,9
+"146";"Candidato 1";"mais de 60";"Masculino";25,8
+"147";"Candidato 8";"mais de 60";"Masculino";0
+"148";"Candidato 5";"mais de 60";"Masculino";0
+"149";"Candidato 10";"mais de 60";"Masculino";0
+"150";"Candidato 9";"mais de 60";"Masculino";0
+"151";"Candidato 3";"mais de 60";"Masculino";28,6
+"152";"Candidato 4";"mais de 60";"Masculino";25
+"153";"Candidato 6";"mais de 60";"Masculino";0
+"154";"Candidato 7";"mais de 60";"Masculino";50
+"155";"Candidato 12";"mais de 60";"Masculino";0
+"156";"Candidato 14";"mais de 60";"Masculino";NA
+"157";"Candidato 11";"mais de 60";"Masculino";0
+"158";"Candidato 13";"mais de 60";"Masculino";0
+"159";"Ninguém/Branco/Nulo";"mais de 60";"Masculino";24,3
+"160";"NS/NR";"mais de 60";"Masculino";17,5

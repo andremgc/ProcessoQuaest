@@ -1,0 +1,724 @@
+---
+title: "Avaliação técnica — Quaest, Data Scientist Jr."
+author: "André M. G. Costa"
+date: "30/04/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introdução
+
+Esta págnia contém o código, a descrição dos processos e os resultados
+obtidos para a segunda etapa do processo seletivo para Data Scientist Jr.
+da Quaest.
+
+O código também se encontra no projeto que hospeda esta página: 
+O arquivo Main.R chama três arquivos na pasta './Code/Tasks', cada um 
+feito para uma tarefa solicitada. Tais arquivos se utilizam de funções
+que se encontram na pasta './Code/Functions', sendo uma relacionada
+ao tratamento dos dados de entrada e duas relacionadas à geração 
+de tabelas de contingência.
+
+Para este trabalho, foi utilizado o R versão 4.0.5 e os pacotes:
+ggplot2_3.3.3; stringr_1.4.0; forcats_0.5.1; dplyr_1.0.5; openxlsx_4.2.3
+
+
+
+```{r echo=F, warning=F, message=F}
+library(openxlsx) # Abrir arquivo de entrada
+library(dplyr) # Manipulação de dataframes
+library(forcats) # Manipulação de fatores
+library(stringr) # Manipulação de chars
+library(ggplot2) # Criação de gráficos
+
+entrada <- read.xlsx("../Data/bd_surveyquaest.xlsx",sheet=1)
+source('../Code/Functions/trata_entrada.R', encoding = 'UTF-8')
+source('../Code/Functions/tabelas_bivar.R')
+source('../Code/Functions/tabela_contingencia.R', encoding = 'UTF-8')
+```
+
+
+## Leitura e tratamento da entrada {.tabset .tabset-fade}
+
+### Descrição
+
+#### Leitura da entrada
+
+Para leitura da tabela fornecida, foi utilizada a função `read.xlsx()` do pacote
+`openxlsx`, versão **4.2.3**, com o comando. 
+
+
+```{r eval = F}
+entrada <- read.xlsx("./Data/bd_surveyquaest.xlsx",sheet=1)
+```
+
+#### Processamento dos dados
+
+Para realizar o processamento de dados, foi criada a função `trata_entrada()`,
+cujo código pode ser visto na aba correspondente
+e que realiza os seguintes procedimentos:
+
+1. Transforma as colunas do tipo `charater` em `factor`.
+2. Ordena os níveis de fatores de intenção de voto de acordo com a frequência da
+resposta, mas colocando os níveis de `Ninguém/Branco/Nulo` e `NS/NR` ao final.
+5. Ordena os níveis dos fatores das outras variáveis de modo e terem um padrão
+crescente.
+3. Reduz algumas descrições de categorias, especialmente a de renda familiar.
+4. De maneira opcional, diminui o número de níveis nos fatores de educação,
+renda e avaliação do governo, agrupando alguns níveis. Os critérios para cada
+caso estão comentados no código fonte
+5. De maneira opcional, transforma os dados de idade em categóricos, seguindo 
+o padrão de idades utilizado pelo Datafolha.
+
+A seguir, mostra-se o uso da função criada:
+
+```{r}
+survey <- trata_entrada(entrada)
+```
+
+
+### trata_entrada()
+
+```{r}
+
+trata_entrada <- function (entrada,
+                           reduz_rendaf = T,
+                           reduz_esc = T,
+                           reduz_aval = T,
+                           categoriza_idade = T
+){
+    
+    
+    saida <- entrada %>%
+        # Transformando variaveis chr em fct
+        mutate_if(is.character,as.factor) %>%
+        
+        # Ordenando voto de acordo com a frequencia
+        mutate(voto1 = voto1 %>% fct_infreq %>%
+                   # Colocando "Ninguém/Branco/Nulo" e "NS/NR" no final
+                   fct_relevel("Ninguém/Branco/Nulo","NS/NR", after = Inf)
+        ) %>%
+        
+        # Renomeando e reordenando fatores de renda fixa
+        mutate(rendaf = rendaf %>% fct_relabel(function(x)
+            # Obtem conteúdo entre parênteses
+            x %>%  str_extract("\\(.*\\)$") %>%
+                # Remove caracteres especiais
+                str_remove_all("[^[:alnum:] ]") %>%
+                # Remove barra de espaço no inicio
+                str_remove("^ ") %>% 
+                # Coloca um barra de espaço entre número e SM
+                str_replace("([0-9])S", "\\1 S") %>%
+                # Remove a palaVra SM
+                str_remove_all(" SM") %>%
+                # Ajuste para último level
+                str_replace("^de 20$", "mais de 20"))
+            
+            # Reordendnando fatores
+            %>% fct_relevel(
+                "de 10 até 15", "de 15 até 20", after = 5)
+        ) 
+    
+    
+    if(reduz_rendaf){
+        saida <- saida %>% 
+            mutate(rendaf = rendaf %>% fct_collapse(
+                "mais de 10" = c("de 10 até 15", 
+                                 "de 15 até 20", 
+                                 "mais de 20")
+            )
+            ) 
+    }
+    
+    
+    # Se solicitado, reduz o número de fatores de escolaridade, considerando se
+    # completou ensino fundamental, médio e superior.
+    # Se não solicitado, apenas reordenamos os fatores.
+    
+    if(reduz_esc){
+        saida <- saida %>%
+            mutate(esc = esc %>% fct_collapse(
+                "Não completou EF" = c(
+                    "Sem instrução e menos de 1 ano de estudo",
+                    "Ensino fundamental incompleto"),
+                "Ensino Fundamental" = c(
+                    "Ensino fundamental completo",
+                    "Ensino médio incompleto"),
+                "Ensino Médio" = c(
+                    "Ensino médio completo",
+                    "Ensino superior incompleto") ,
+                "Ensino Superior" =  "Ensino superior completo") %>%
+                    
+                    fct_relevel("Não completou EF")
+            )
+    } else {
+        saida <- saida %>% 
+            mutate(esc = esc %>% fct_relevel(
+                "Sem instrução e menos de 1 ano de estudo",
+                "Ensino fundamental incompleto",
+                "Ensino fundamental completo",
+                "Ensino médio incompleto",
+                "Ensino médio completo",
+                "Ensino superior incompleto",
+                "Ensino superior completo" 
+            ))
+    }
+    
+    # Se solicitado, reduz o número de categorias de avaliação do governo em 
+    # boa/ótima, regular e ruim/péssima.
+    # Se não solicitado, apenas reordena os fatores.    
+    
+    if(reduz_aval){
+        saida <- saida %>%
+            # Ordenando avaliação do governo
+            mutate(aval_gov = aval_gov %>% fct_collapse(
+                "Boa/Ótima" = c("Boa", "Ótima"),
+                "Regular" = c("Regular positiva", "Regular negativa"),
+                "Ruim/Péssima" = c("Ruim", "Péssima")
+            ) %>% fct_relevel(c("Boa/Ótima","Regular","Ruim/Péssima")))
+    } else {
+        saida <- saida %>%
+            mutate(aval_gov = aval_gov %>% fct_relevel(
+                "Péssima",
+                "Ruim" ,
+                "Regular negativa",
+                "Regular positiva",
+                "Boa",
+                "Ótima" ,
+                "NS/NR"
+            ))
+    }
+    
+    
+    
+    # Se solicitado, transforma idade em fatores de acordo com critério utilizado
+    # pelo Datafolha
+    
+    if(categoriza_idade){
+        saida <- saida %>% 
+            mutate(idade = idade %>% cut(breaks = c(0, 24, 34, 44, 59, 200)) %>%
+                       fct_recode("de 16 a 24" = "(0,24]",
+                                  "de 25 a 34" = "(24,34]",
+                                  "de 35 a 44" = "(34,44]",
+                                  "de 45 a 59" = "(44,59]",
+                                  "mais de 60" = "(59,200]") 
+            ) 
+    }
+}
+
+```
+
+
+## Função para criação de tabelas de contingência{.tabset .tabset-fade}
+
+### Descrição
+
+Foi criada uma função `tabela_convergencia()` para criação de tabelas de
+contingência. Tal função recebe, em formato de vetor de `character`, quais 
+variáveis deseja-se avaliar junto à variável de voto estimado 
+(é possível escolher outra variável de reverência com a entrada `varref`).
+A função também
+recebe um `data.frame` para utilizar como referência, por padrão considera um
+`data.frame` chamado _survey_.
+
+Além disso, a função permite, por meio da variável `porcentagem`,
+que a tabela apresente os dados em porcentagem, ao invés de absoluto. Com 
+a variável `dimensao`, pode-se definir se queremos a porcentagem relativa a uma 
+ou mais variáveis, por meio do trecho de código : 
+`tabela %>% prop.table(dimensao)`. A função também permite adicionar margens à tabela gerada, com a soma dos valores de dimensões.
+
+A função retorna uma tabela cruzada do tipo `table` para multivariada e `xtabs`
+para monovariada. Seu código fonte pode ser visto na aba correspondente e alguns
+exemlos de utilização podem ser vistos na aba **Exemplos**. 
+
+Além desta função, foi criada uma função para gerar e imprimir 
+as tabelas bivariadas
+contendo a intenção de voto e todas as outras variáveis categóricas do 
+`data.frame`. Essa função, `tabelas_bivar()`, pode ser vista na aba
+correspondente.
+
+### tabela_contingência()
+
+```{r}
+tabela_contingencia <-function(variavel,
+                               df = survey,
+                               porcentagem = T,
+                               dimensao = NULL,
+                               margens = F,
+                               varref = "voto1"){
+    
+    if(!is.character(variavel)) 
+        stop("A entrada 'variavel' deve ser do tipo character")
+    if(!(porcentagem %in% c(0,1,2) )) 
+        stop("A entrada 'porcentagem' deve ser 0, 1 ou 2")
+    if(sum (variavel %in% names(df) ) < length(variavel) )
+        stop("A entrada 'variavel' deve conter apenas nomes de coluna de 'df'")
+    if(anyDuplicated(variavel))
+        stop("A entrada 'variavel' não deve conter valores repetidos")
+    
+    
+    f <- as.formula(paste(paste0("~",varref,"+"),
+                          paste(variavel, collapse="+")))
+    
+    tabela <-  xtabs(f,df) 
+    
+    if (porcentagem){
+        tabela <- tabela %>% prop.table(dimensao) %>% `*`(100) %>% round(1) 
+    }
+    
+    if (margens){
+        tabela <- tabela %>% addmargins()  
+    }
+    
+    return(tabela)
+}
+```
+
+### Exemplos {.tabset .tabset-fade}
+
+Estes exemplos também estão no arquivo "./Code/Tasks/Tabelas.R".
+
+#### As mulheres e os homens estão votando no mesmo candidato ?
+
+Analisando a tabela,
+parece haver uma maior preferência feminina ao candidato 2
+em relação aos homens, enquanto os homens parecem apresentar
+maior tendência a votar no candidato 1.
+
+```{r}
+pergunta = tabela_contingencia("sexo", dimensao = 2)
+knitr::kable(pergunta)
+```
+
+
+
+#### Exemplo simples bivariada com dados absolutos
+
+```{r}
+sexo = tabela_contingencia("sexo", porcentagem = F)
+knitr::kable(sexo)
+```
+
+####  Exemplo simples bivariada com dados em porcento
+
+```{r}
+aval_gov = tabela_contingencia("aval_gov")
+knitr::kable(aval_gov)
+```
+
+####   Exemplo bivariada com dados em porcento e margens
+
+```{r}
+esc = tabela_contingencia("esc", margens = T)
+knitr::kable(esc)
+```
+
+####    Exemplo bivariada com dados em porcento em relação ao voto
+
+__Significado__: Quantos porcento dos que disseram votar em um candidato 
+estão em cada categoria de idade
+
+```{r}
+idade = tabela_contingencia("idade", dimensao = 1)
+knitr::kable(idade)
+```
+
+####    Exemplo bivariada com dados em porcento em relação à outra variável
+
+__Significado__: Quantos porcento dos que tem certa renda dizem votar
+em cada candidato
+
+```{r}
+rendaf = tabela_contingencia("rendaf", dimensao = 2)
+knitr::kable(rendaf)
+```
+
+
+####  Exemplo multivariada simples com dados em porcento e margens
+
+__Atenção__: Os exemplos multivariados são melhor visualizados gerando no console
+
+```{r}
+rendaf_sexo =  tabela_contingencia(c("rendaf","sexo"), margens = T)
+knitr::kable(rendaf_sexo)
+```
+
+
+####  Exemplo multivariada simples com dados em porcento para uma dada intenção de voto e um dado sexo.
+
+__Atenção__: Os exemplos multivariados são melhor visualizados gerando no console
+
+
+```{r}
+idade_sexo = tabela_contingencia(c("idade", "sexo"), dimensao = c(1,3))
+knitr::kable(idade_sexo)
+```
+
+
+
+### tabelas_bivar()
+
+```{r}
+tabelas_bivar <-function(df, 
+                         porcentagem = T,
+                         dimensao = NULL,
+                         margens = F,
+                         varref = "voto1",
+                         ignorar = c("voto1","voto1_red","voto1_red2")){
+    
+    df <- df[,sapply(df, is.factor)]
+    for (v in names(df)){
+        if (!(v %in% ignorar)){
+            print(tabela_contingencia(v, df, porcentagem, dimensao,
+                                      margens, varref))
+        }
+    }
+    
+}
+
+```
+
+
+## Gráficos {.tabset .tabset-fade}
+
+### Comentários
+
+O primeiro gráfico mostra que o candidato 2 é o grande favorito para as 
+eleições, caso ela ocorresse no momento da pesquisa, uma vez que apresenta
+mais de 50% dos votos totais. Se considerarmos os votos válidos, este número ultrapassa os 70%.
+
+Avaliando o segundo gráfico, pode-se perceber que quando se avalia o 
+governo positivamente, há uma maior tendência a votar no candidato 2. 
+Isto, somado às boas perspectivas deste candidato, sugerem que ele possa
+ser o próprio governante atual, ou um aliado próximo e conhecido.
+
+Por outro lado, Também podemos perceber que, quanto pior se avalia o 
+governo, maior a tendência de não saber ou dizer que não irá votar. 
+Nesse sentido, também é interessante verificar que o candidato 8 tem uma
+relativa importância entre os que avaliam mal o governo, podendo ser um
+candidato de oposição declarada, mas não tanto conhecido, ou de visões
+consideradas mais radicais. É interessante ver que, dentre os que avaliam
+como boa ou ótima a atuação do governo, este candidato apresenta menor
+intenção de votos entre os 8 candidatos que mais se destacaram nessa pesquisa.
+
+
+```{r echo=F, fig.align = 'center', message=F}
+
+# Definindo cor do fundo
+cor="#EEEEFF"
+
+# Gerando dados para o gráfico: 
+# obtendo porcentagem de cada voto e colocando quebra de linha em "Ninguém/..."
+
+df_plot1 <- survey %>% 
+    group_by(voto1) %>% summarise(n = n()) %>% ungroup()%>%
+    mutate(pct = n/sum(n)*100)%>%
+    mutate(voto1 = voto1 %>%
+               fct_recode("Ninguém/\nBranco/Nulo" = "Ninguém/Branco/Nulo"))
+
+# Gerando gráfico 1
+
+p1 <- ggplot(aes(x = fct_rev(voto1), y = pct), data = df_plot1) +
+    # Barras
+    geom_bar(stat = "identity", aes(fill=voto1))+
+    # Texto dos valores percentis
+    geom_text(aes(label = pct %>% format(nsmall=1) %>% paste0("%"),
+                  y=pct +0.5, hjust=0))+
+    # configurando eixo
+    scale_y_continuous(expand = c(0, 0),
+                       limits = c(0, max(df_plot1$pct)+7)
+                       ) +
+    # Ajustando cores
+    scale_fill_manual(values = c(rep("#222277", 14), "#AAAAAA", "#AAAAAA"))+
+    # Título
+    ggtitle("Pesquisa eleitoral: Intenção de voto") + 
+    #Estética
+    theme_classic()+
+    theme(
+        axis.line=element_blank(),
+        axis.ticks=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y = element_text(vjust = 0.4),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = 'none',
+        plot.background = element_rect(fill = cor, colour = cor),
+        panel.background = element_rect(fill = cor, colour = cor)
+    ) + 
+    coord_flip()
+
+print(p1)
+
+
+
+# Manualmente cria coluna voto1_red,
+# que considera candidatos com menos de 1.0% dos votos como outros.
+
+survey <- survey %>%
+    mutate(voto1_red = voto1 %>% fct_collapse(
+        Outros = c("Candidato 7", "Candidato 12", "Candidato 14",
+                   "Candidato 11", "Candidato 13"))
+    ) 
+
+##### Grafico 2 ####
+
+# Definindo cor do fundo
+cor="#EEEEFF"
+
+
+# Gerando dados para o gráfico:
+# obtendo porcentagem de cada candidato para cada aval.
+
+df_plot2 <- survey %>% 
+    group_by(voto1_red,aval_gov) %>% summarise(n = n()) %>% ungroup() %>%
+    group_by(aval_gov) %>%
+    mutate(pct = n/sum(n)*100)%>%
+    mutate(voto1_red = voto1_red %>%
+               fct_recode("Ninguém/\nBranco/Nulo" = "Ninguém/Branco/Nulo")) %>%
+    filter(aval_gov != "NS/NR") %>%
+    mutate(aval_gov = aval_gov %>%
+               fct_recode(
+                   # paste0("Boa/Ótima\n",a["Boa/Ótima"],"%") ="Boa/Ótima",
+                   # paste0("Regular\n",a["Regular"],"%") ="Regular",
+                   "Ruim/Péssima\n11,3 %"="Ruim/Péssima"
+               )
+    )
+
+# Obtendo a porcentagem das respostas de cada categoria de avaliacao
+
+pct_aval <- table(survey$aval_gov) %>% prop.table() %>% `*`(100)
+
+```
+
+
+
+```{r echo=F, fig.align = 'center', message=F}
+# Gerando gráfico 2
+
+p2 <- ggplot(aes(fill=fct_rev(voto1_red), x = fct_rev(aval_gov), y = pct),
+            data = df_plot2) +
+    
+    geom_bar(stat = "identity",position = "dodge")+ 
+    
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(df_plot2$pct)+3),
+                       breaks = seq(0,70,10), minor_breaks = seq(0,75,5)) +
+    
+    scale_x_discrete(labels = c(
+        paste0("Ruim/Péssima\n(",pct_aval["Ruim/Péssima"],"% do total)"),
+        paste0("Regular\n(",pct_aval["Regular"],"% do total)"),
+        paste0("Boa/Ótima\n(",pct_aval["Boa/Ótima"],"% do total)")))+
+    
+    scale_fill_manual(values = 
+                          rev(c(RColorBrewer::brewer.pal(8,"Set1")[1:5],
+                                "#CCCC00",
+                                RColorBrewer::brewer.pal(8,"Set1")[7:8],
+                                "#772211", "#156426", "#AAAAAA", "#BBBBBB"))) +
+    
+    ggtitle("Pesquisa eleitoral:\nIntenção de voto por avaliação do governo") + 
+    ylab("%")+
+    
+    theme_classic()+
+    guides(fill = guide_legend(reverse = TRUE))+
+    theme(axis.ticks=element_blank(),
+          axis.text.y = element_text(vjust = 0.3),
+          panel.grid.major.x =  element_line(colour = "#CCCCCC"),
+          panel.grid.minor.x =  element_line(colour = "#E4E4E4"),
+          axis.title.y = element_blank(),
+          plot.background = element_rect(fill = cor, colour = cor),
+          panel.background = element_rect(fill = cor, colour = cor),
+          legend.background = element_rect(fill = cor, colour = cor),
+          legend.title = element_blank())+ 
+    coord_flip()
+
+print(p2)
+
+```
+
+
+### Sobre o gráfico 1 
+
+#### Considerações
+
+Para a tarefa do gráfico das intenções de voto, optou-se por utilizar um 
+gráfico de barras horizontal, mostrando o valor em porcentagem em texto, como
+são feitos muitos dos gráficos que apresentam este tipo de informação.
+
+A cor no fundo foi utilizada para diminuir o contraste e deixar a figura
+mais confortável para se ver.
+
+#### Código e Gráfico
+
+```{r message=F, fig.align = 'center'}
+
+# Definindo cor do fundo
+cor="#EEEEFF"
+
+# Gerando dados para o gráfico: 
+# obtendo porcentagem de cada voto e colocando quebra de linha em "Ninguém/..."
+
+df_plot1 <- survey %>% 
+    group_by(voto1) %>% summarise(n = n()) %>% ungroup()%>%
+    mutate(pct = n/sum(n)*100)%>%
+    mutate(voto1 = voto1 %>%
+               fct_recode("Ninguém/\nBranco/Nulo" = "Ninguém/Branco/Nulo"))
+
+# Gerando gráfico 1
+
+p1 <- ggplot(aes(x = fct_rev(voto1), y = pct), data = df_plot1) +
+    # Barras
+    geom_bar(stat = "identity", aes(fill=voto1))+
+    # Texto dos valores percentis
+    geom_text(aes(label = pct %>% format(nsmall=1) %>% paste0("%"),
+                  y=pct +0.5, hjust=0))+
+    # configurando eixo
+    scale_y_continuous(expand = c(0, 0),
+                       limits = c(0, max(df_plot1$pct)+7)
+                       ) +
+    # Ajustando cores
+    scale_fill_manual(values = c(rep("#222277", 14), "#AAAAAA", "#AAAAAA"))+
+    # Título
+    ggtitle("Pesquisa eleitoral: Intenção de voto") + 
+    #Estética
+    theme_classic()+
+    theme(
+        axis.line=element_blank(),
+        axis.ticks=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y = element_text(vjust = 0.4),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position = 'none',
+        plot.background = element_rect(fill = cor, colour = cor),
+        panel.background = element_rect(fill = cor, colour = cor)
+    ) + 
+    coord_flip()
+
+print(p1)
+```
+
+
+### Sobre o gráfico 2 
+
+#### Considerações
+
+Para a tarefa do gráfico das intenções de voto junto às avaliações do
+governo, optou-se por utilizar uma representação similar à anterior,
+visando facilitar a interpretação e manter uma coerência.
+
+Neste caso, decidiu-se por separar o gráfico em três grupos, relativos
+às avaliações de governo. Foram utilizadas as categorias "boa/ótima",
+"regular" e "ruim/péssima". Em cada uma dessas partes do gráfico, as barras
+representam a porcentagem das pessoas dessa categoria que pretendem votar
+em cada candidato.(Por exemplo: mais de 70% das pessoas que avaliam o 
+governo como bom ou ótimo, pretendem votar no candidato 2.).
+
+A escolha por representar os dados em porcentagem relativa a cada
+categoria se deu considerando a diferença do número de respostas em cada
+uma. Assim, a visualização dos dados da categoria "ruim/péssima" ficavam
+desconfortáveis de se analizar. Para explicitar a diferença da frequência
+de cada avaliação, foi colocado a porcentagem das respostas de cada
+categoria em texto.
+
+A utilização das três categorias descritas acima foi definida por três
+razões principais: 
+
+1. Esta é a forma em que são apresentadas as principais pesquisas de 
+aprovação de governo.
+2. Reduzir o número de categorias facilita a visualização e
+interpretação dos dados
+3. Algumas categorias possuiam muito poucos elementos, o que 
+faz com que tenhamos mais incertezas em relação a sua representatividade
+
+Para não poluir o gráfico, foram também retirados todos os candidatos
+com menos de 1% da intenção de votos, também considerando a pouca 
+representatividade e importância destes para a análise.
+
+
+
+#### Código e Gráfico
+
+```{r fig.align = 'center', message=F}
+
+# Manualmente cria coluna voto1_red,
+# que considera candidatos com menos de 1.0% dos votos como outros.
+
+survey <- survey %>%
+    mutate(voto1_red = voto1 %>% fct_collapse(
+        Outros = c("Candidato 7", "Candidato 12", "Candidato 14",
+                   "Candidato 11", "Candidato 13"))
+    ) 
+
+##### Grafico 2 ####
+
+# Definindo cor do fundo
+cor="#EEEEFF"
+
+
+# Gerando dados para o gráfico:
+# obtendo porcentagem de cada candidato para cada aval.
+
+df_plot2 <- survey %>% 
+    group_by(voto1_red,aval_gov) %>% summarise(n = n()) %>% ungroup() %>%
+    group_by(aval_gov) %>%
+    mutate(pct = n/sum(n)*100)%>%
+    mutate(voto1_red = voto1_red %>%
+               fct_recode("Ninguém/\nBranco/Nulo" = "Ninguém/Branco/Nulo")) %>%
+    filter(aval_gov != "NS/NR") %>%
+    mutate(aval_gov = aval_gov %>%
+               fct_recode(
+                   # paste0("Boa/Ótima\n",a["Boa/Ótima"],"%") ="Boa/Ótima",
+                   # paste0("Regular\n",a["Regular"],"%") ="Regular",
+                   "Ruim/Péssima\n11,3 %"="Ruim/Péssima"
+               )
+    )
+
+# Obtendo a porcentagem das respostas de cada categoria de avaliacao
+
+pct_aval <- table(survey$aval_gov) %>% prop.table() %>% `*`(100)
+
+
+# Gerando gráfico 2
+
+p2 <- ggplot(aes(fill=fct_rev(voto1_red), x = fct_rev(aval_gov), y = pct),
+            data = df_plot2) +
+    
+    geom_bar(stat = "identity",position = "dodge")+ 
+    
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(df_plot2$pct)+3),
+                       breaks = seq(0,70,10), minor_breaks = seq(0,75,5)) +
+    
+    scale_x_discrete(labels = c(
+        paste0("Ruim/Péssima\n(",pct_aval["Ruim/Péssima"],"% do total)"),
+        paste0("Regular\n(",pct_aval["Regular"],"% do total)"),
+        paste0("Boa/Ótima\n(",pct_aval["Boa/Ótima"],"% do total)")))+
+    
+    scale_fill_manual(values = 
+                          rev(c(RColorBrewer::brewer.pal(8,"Set1")[1:5],
+                                "#CCCC00",
+                                RColorBrewer::brewer.pal(8,"Set1")[7:8],
+                                "#772211", "#156426", "#AAAAAA", "#BBBBBB"))) +
+    
+    ggtitle("Pesquisa eleitoral:\nIntenção de voto por avaliação do governo") + 
+    ylab("%")+
+    
+    theme_classic()+
+    guides(fill = guide_legend(reverse = TRUE))+
+    theme(axis.ticks=element_blank(),
+          axis.text.y = element_text(vjust = 0.3),
+          panel.grid.major.x =  element_line(colour = "#CCCCCC"),
+          panel.grid.minor.x =  element_line(colour = "#E4E4E4"),
+          axis.title.y = element_blank(),
+          plot.background = element_rect(fill = cor, colour = cor),
+          panel.background = element_rect(fill = cor, colour = cor),
+          legend.background = element_rect(fill = cor, colour = cor),
+          legend.title = element_blank())+ 
+    coord_flip()
+
+print(p2)
+
+```
+
+

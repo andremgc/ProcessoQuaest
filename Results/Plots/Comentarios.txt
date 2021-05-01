@@ -1,0 +1,32 @@
+Sobre o Gráfico 1:
+
+Para a tarefa do gráfico das intenções de voto, optou-se por utilizar um gráfico de barras horizontal, mostrando o valor em porcentagem em texto, como são feitos muitos dos gráficos que apresentam este tipo de informação.
+
+A cor no fundo foi utilizada para diminuir o contraste e deixar a figura mais confortável para se ver.
+
+
+
+Sobre o Gráfico 2:
+
+Para a tarefa do gráfico das intenções de voto junto às avaliações do governo, optou-se por utilizar uma representação similar à anterior, visando facilitar a interpretação e manter uma coerência.
+
+Neste caso, decidiu-se por separar o gráfico em três grupos, relativos às avaliações de governo. Foram utilizadas as categorias “boa/ótima”, “regular” e “ruim/péssima”. Em cada uma dessas partes do gráfico, as barras representam a porcentagem das pessoas dessa categoria que pretendem votar em cada candidato.(Por exemplo: mais de 70% das pessoas que avaliam o governo como bom ou ótimo, pretendem votar no candidato 2.).
+
+A escolha por representar os dados em porcentagem relativa a cada categoria se deu considerando a diferença do número de respostas em cada uma. Assim, a visualização dos dados da categoria “ruim/péssima” ficavam desconfortáveis de se analizar. Para explicitar a diferença da frequência de cada avaliação, foi colocado a porcentagem das respostas de cada categoria em texto.
+
+A utilização das três categorias descritas acima foi definida por três razões principais:
+
+Esta é a forma em que são apresentadas as principais pesquisas de aprovação de governo.
+Reduzir o número de categorias facilita a visualização e interpretação dos dados
+Algumas categorias possuiam muito poucos elementos, o que faz com que tenhamos mais incertezas em relação a sua representatividade
+
+Para não poluir o gráfico, foram também retirados todos os candidatos com menos de 1% da intenção de votos, também considerando a pouca representatividade e importância destes para a análise.
+
+
+Comentários finais:
+
+O primeiro gráfico mostra que o candidato 2 é o grande favorito para as eleições, caso ela ocorresse no momento da pesquisa, uma vez que apresenta mais de 50% dos votos totais. Se considerarmos os votos válidos, este número ultrapassa os 70%.
+
+Avaliando o segundo gráfico, pode-se perceber que quando se avalia o governo positivamente, há uma maior tendência a votar no candidato 2. Isto, somado às boas perspectivas deste candidato, sugerem que ele possa ser o próprio governante atual, ou um aliado próximo e conhecido.
+
+Por outro lado, Também podemos perceber que, quanto pior se avalia o governo, maior a tendência de não saber ou dizer que não irá votar. Nesse sentido, também é interessante verificar que o candidato 8 tem uma relativa importância entre os que avaliam mal o governo, podendo ser um candidato de oposição declarada, mas não tanto conhecido, ou de visões consideradas mais radicais. É interessante ver que, dentre os que avaliam como boa ou ótima a atuação do governo, este candidato apresenta menor intenção de votos entre os 8 candidatos que mais se destacaram nessa pesquisa.
